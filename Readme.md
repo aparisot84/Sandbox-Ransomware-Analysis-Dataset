@@ -1,4 +1,20 @@
+Sandbox-Ransomware-Analysis-Dataset
+
+Este repositorio surgiu a partir do meu trabalho de dissertação de mestrado na área de Segurança de Sistemas na Universidade Federal Fluminense.
+Durante o desenvolvimento da pesquisa, tive a necessidade de procurar amostras de ransomware nos repositórios disponíveis na internet e construir scripts que pudessem automatizar este processo.
+
 Conteúdo deste arquivo:
+
+1 - Descrição do Projeto
+
+1 - Scripts:
+    1.1 - Ransomware HashList Download
+    1.2 - HashList Submit Downoad Sample
+    1.3 -   Dataset Constructs from Json Reports
+
+2 - Dataset
+
+###################################################
 
 Distribuição dos códigos (o que cada um faz)
 
