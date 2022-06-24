@@ -5,8 +5,10 @@
 <p align="center"><img src="http://img.shields.io/static/v1?label=LANGUAGE&message=PYTHON3&color=YELLOW&style=for-the-badge"/></p>
 </div>
 
+<div align="justify">
 DISCLAIMER: Os scripts contidos neste reporitório fazem o download de malware direto para a sua máquina. A sintaxe das pastas (com //) é a do linux e os arquivos baixados são apenas DLL ou EXE.
 Se você não tem plena ciência do que está fazendo, não execute os scripts, pois voce corre o risco de ter seus arquivos criptografados e não me responsabilizo se isso acontecer.
+</div>
 
 1 - Decrição do Projeto:
 
