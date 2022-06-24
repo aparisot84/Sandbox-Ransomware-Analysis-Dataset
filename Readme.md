@@ -7,7 +7,7 @@
 
 <div align="justify">
 DISCLAIMER: Os scripts contidos neste reporitório fazem o download de malware direto para a sua máquina. A sintaxe das pastas (com //) é a do linux e os arquivos baixados são apenas DLL ou EXE.
-Se você não tem plena ciência do que está fazendo, não execute os scripts, pois voce corre o risco de ter seus arquivos criptografados e não me responsabilizo se isso acontecer.
+Se você não tem plena ciência do que está fazendo, não execute os scripts, pois corre o risco de ter seus arquivos criptografados e não me responsabilizo se isso acontecer.
 </div>
 
 <h3>1 - Decrição do Projeto:</h3>
