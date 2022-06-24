@@ -67,16 +67,16 @@ Este script verifica o conteúdo da pasta HashList e checa os dados no VT para a
 <div align="justify">
 Arquivo que deszipa as amostras de
 Arquivo que baixa os relatórios em JSON do cuckoo (ver se dá pra colocar junto com o script que já baixa as amostras)
-</div><br>
+</div>
         
-<h4>4.3 -   Dataset Constructs from Json Reports</h4>
+<h4>4.4 -   Dataset Constructs from Json Reports</h4>
 
 <div align="justify">
 Este script transforma os arquivos JSON, produzidos pelo cuckoo sandbox ao executar as análises das amostras, em um dataframe pandas, convertendo os dados selecionados em features para o dataset. 
-</div><br>
+</div>
 
 <h3>5 - Dataset</h3>
  
 <div align="justify">
 Em desenvolvimento.
-</div><br>
+</div>
