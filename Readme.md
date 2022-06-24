@@ -3,7 +3,7 @@
 <div align="center">
 <img src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
 <img src="http://img.shields.io/static/v1?label=LANGUAGE&message=PYTHON3&color=YELLOW&style=for-the-badge"/>
-</div>
+</div><br>
 
 <div align="justify">
 DISCLAIMER: Os scripts contidos neste reporitório fazem o download de malware direto para a sua máquina. A sintaxe das pastas (com //) é a do linux e os arquivos baixados são apenas DLL ou EXE.
