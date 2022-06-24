@@ -32,15 +32,15 @@ Uma observação que cabe ser feita é que o VirusTotal não permite download de
 Atente-se também para as limitações impostas pelos repositórios para interações com suas API (se não houvesse limites, poderiamos causar um DoS):
 </div><br>
         
-VirusTotal (Licença Educacional/Pesquisa):
-    Request rate => 1000 lookups/min
-    Daily quota => 20 K lookups/day
-    Monthly quota => 620K lookups/month 
+        VirusTotal (Licença Educacional/Pesquisa):
+            Request rate => 1000 lookups/min
+            Daily quota => 20 K lookups/day
+            Monthly quota => 620K lookups/month 
 
-VirusShare:
-    Request rate: 4 requests/min
-    Daily Quota: 5,760 requests
-    Monthly Quota: 172,800 requests        
+        VirusShare:
+            Request rate: 4 requests/min
+            Daily Quota: 5,760 requests
+            Monthly Quota: 172,800 requests        
     
 3 - Instalação e uso:
     
