@@ -1,6 +1,4 @@
-<h1 align="center"> Montagem de Dataset para Detecção de Ataques de Ransomware: Desafios e Soluções</h1>
-<br>
-
+<h1 align="center"> Montagem de Dataset para Detecção de Ataques de Ransomware: Desafios e Soluções</h1><br>
 
 <div align="center">
 <img src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
