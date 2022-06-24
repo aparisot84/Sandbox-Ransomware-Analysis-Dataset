@@ -1,9 +1,13 @@
 <h1 align="center"> Sandbox-Ransomware-Analysis-Dataset </h1>
 
+<br>
+
 <div align="center">
 <img src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
 <img src="http://img.shields.io/static/v1?label=LANGUAGE&message=PYTHON3&color=YELLOW&style=for-the-badge"/>
 </div>
+
+<br>
 
 <div align="justify">
 DISCLAIMER: Os scripts contidos neste reporitório fazem o download de malware direto para a sua máquina. A sintaxe das pastas (com //) é a do linux e os arquivos baixados são apenas DLL ou EXE.
@@ -28,15 +32,15 @@ Uma observação que cabe ser feita é que o VirusTotal não permite download de
 Atente-se também para as limitações impostas pelos repositórios para interações com suas API (se não houvesse limites, poderiamos causar um DoS):
 </div><br>
         
-        VirusTotal (Licença Educacional/Pesquisa):
-            Request rate => 1000 lookups/min
-            Daily quota => 20 K lookups/day
-            Monthly quota => 620K lookups/month 
+VirusTotal (Licença Educacional/Pesquisa):
+    Request rate => 1000 lookups/min
+    Daily quota => 20 K lookups/day
+    Monthly quota => 620K lookups/month 
 
-        VirusShare:
-            Request rate: 4 requests/min
-            Daily Quota: 5,760 requests
-            Monthly Quota: 172,800 requests        
+VirusShare:
+    Request rate: 4 requests/min
+    Daily Quota: 5,760 requests
+    Monthly Quota: 172,800 requests        
     
 3 - Instalação e uso:
     
