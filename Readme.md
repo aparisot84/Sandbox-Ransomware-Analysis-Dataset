@@ -1,6 +1,6 @@
-<h1 align="center"> Sandbox-Ransomware-Analysis-Dataset </h1>
-
+<h1 align="center"> Montagem de Dataset para Detecção de Ataques de Ransomware: Desafios e Soluções</h1>
 <br>
+
 
 <div align="center">
 <img src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
@@ -14,7 +14,7 @@ DISCLAIMER: Os scripts contidos neste reporitório fazem o download de malware d
 Se você não tem plena ciência do que está fazendo, não execute os scripts, pois voce corre o risco de ter seus arquivos criptografados e não me responsabilizo se isso acontecer.
 </div><br>
 
-1 - Decrição do Projeto:
+<h2>1 - Decrição do Projeto:</h2>
 
 <div align="justify">
 Este projeto surgiu a partir do meu trabalho de dissertação de mestrado na área de Segurança de Sistemas na Universidade Federal Fluminense.
