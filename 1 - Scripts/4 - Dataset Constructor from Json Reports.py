@@ -1,3 +1,4 @@
+import collections
 import json
 import os
 from threading import Thread
@@ -13,7 +14,6 @@ def read_json(filename: str) -> dict:
             data = json.loads(f.read())
     except:
         raise Exception(f"Reading {filename} file encountered an error")
-
     return data
 
 
@@ -32,7 +32,8 @@ def flatten(d, sep="."):
 
     #import collections
 
-    obj = {} #collections.OrderedDict()
+    #obj = {}
+    obj = collections.OrderedDict()
 
     def recurse(t, parent_key=""):
         if isinstance(t, list):
@@ -48,7 +49,7 @@ def flatten(d, sep="."):
     return obj
 
 
-def filter_dict(json_file):
+def filter_dict(json_file): #este é o filtro que passa o que não está listado
 
     """
     Filtra o arquivo JSON para concatenar somente as informações escolhidas para compor o dataset. Como os arquivos podem ser muito diferentes, é melhor descartar as entradas indesehjadas ao invés de selecionar as entradas desejadas.
@@ -119,7 +120,7 @@ def filter_dict(json_file):
         [json_file["behavior"]["processtree"][i].pop(key, "chave: não encontrada") for key in ['track', 'pid', 'first_seen', 'ppid', 'process_name', 'command_line', 'children']]   #coloquei o children pra ver como diminui
 
     if "summary" in json_file["behavior"]:
-        [json_file["behavior"]["summary"].pop(key, "chave: não encontrada") for key in ['file_opened', 'regkey_opened', 'tls_master', 'guid', 'connects_ip', 'regkey_writen', 'command_line', 'regkey_deleted', 'mutex', 'file_read', 'regkey_read', 'file_created', 'file_moved', 'file_written', 'file_recreated', 'directory_created', 'file_failed', 'resolves_host', 'file_deleted', 'directory_removed', 'file_exists', 'directory_enumerated', 'file_opened', 'wmi_query', 'connects_host', 'dll_loaded', 'regkey_written']]    #coloquei dll_loaded e regkey-written para ver como diminui
+        [json_file["behavior"]["summary"].pop(key, "chave: não encontrada") for key in ['file_opened', 'regkey_opened', 'tls_master', 'guid', 'connects_ip', 'regkey_writen', 'command_line', 'regkey_deleted', 'mutex', 'file_read', 'regkey_read', 'file_created', 'file_moved', 'file_written', 'file_recreated', 'directory_created', 'file_failed', 'resolves_host', 'file_deleted', 'directory_removed', 'file_exists', 'directory_enumerated', 'file_opened', 'wmi_query', 'connects_host', 'dll_loaded', 'regkey_written', 'file_copied']]    #coloquei dll_loaded e regkey-written para ver como diminui
 
     # A entrada memory será aproveitada
     json_file.pop("memory", "chave: não encontrada")
@@ -142,6 +143,24 @@ def filter_dict(json_file):
     return json_file
 
 
+def filter_dict2(json_file):
+
+    filtered_json_file = {}
+
+    if ("behavior" in json_file) and ("apistats" in json_file["behavior"]):
+
+        filtered_json_file["apistats"] = json_file["behavior"]["apistats"]
+
+        filtered_json_file["score"] = json_file["info"]["score"]
+
+        filtered_json_file["id"] = json_file["info"]["id"]
+
+        return filtered_json_file
+
+    else:
+        return 0
+
+
 def normalize(flat_json):
 
     """Esta função vai receber o flat json e transformar em dataframe"""
@@ -149,7 +168,6 @@ def normalize(flat_json):
     # preparar para receber chaves diferentes de "apistats" no dicionário (tenho que verificar quais podem entrar)
 
     keys_list = list(flat_json.keys())
-    values_list = list(flat_json.values())
 
     unique_cols = {}
 
@@ -161,6 +179,7 @@ def normalize(flat_json):
     for k, v in flat_json.items():
         k_split = k.split(sep='.')[-1]
         if k_split in unique_cols:
+            #print(k + "==============>" + str(v))
             unique_cols[k_split] = unique_cols[k_split] + v
 
     # É mais fácil fazer as operações num dicionário mononivel e depois transformar em um dataframe
@@ -171,7 +190,7 @@ def normalize(flat_json):
 
 def main():
 
-    path = "//media//ubuntu//a38624f9-5396-4f62-93b6-3e791cb1b38d/Análises/cuckoo pack/Códigos/Cuckoo Report Bank//JSON//"
+    path = "..//5 - Cuckoo Reports//"
 
     print("Obtendo lista de arquivos na pasta", end='')
     json_file_list = file_list(path)
@@ -191,7 +210,10 @@ def main():
         print("..............carregado")
 
         print("Aplicando filtros ", end='')
-        filtered_json_file = filter_dict(json_file)
+        #filtered_json_file = filter_dict(json_file)
+
+        filtered_json_file = filter_dict2(json_file)
+
         json_file = None
         print("........finalizado")
 
@@ -254,7 +276,7 @@ def main():
             # O arquivo CSV é MENOR que o arquivo PKL, porém o pkl é binário, o que faz com que a leitura e gravação sejam beeeeem mais rápidas
 
             print("Gravando arquivo em disco")
-            to_pickle_args = str(cont) + ".pkl"
+            to_pickle_args = "..//6 - Dataset//" + str(cont) + ".pkl"
             #to_csv_args = str(cont) + ".csv"
             write_thread = Thread(target=df1.to_pickle, args=[to_pickle_args])
             #write_thread = Thread(target=df1.to_csv, args=[to_csv_args])
@@ -263,19 +285,19 @@ def main():
 
             if cont >= 10:
 
-                remove_file_args = (str(cont-5)) + ".pkl"
+                remove_file_args = "..//6 - Dataset//" + (str(cont-5)) + ".pkl"
                 #remove_file_args = (str(cont - 5)) + ".csv"
                 remove_thread = Thread(target=os.remove, args=[remove_file_args])
                 remove_thread.start()
 
         elif item == json_file_list[-1]:
 
-            remove_file_args = (str(int(cont % 5)) * 5) + ".pkl"
+            remove_file_args = "..//6 - Dataset//" + (str(int(cont % 5)) * 5) + ".pkl"
             #remove_file_args = (str(int(cont % 5)) * 5) + ".csv"
             remove_thread = Thread(target=os.remove, args=[remove_file_args])
             remove_thread.start()
 
-        cont+=1
+        cont += 1
 
 
 if __name__ == '__main__':
