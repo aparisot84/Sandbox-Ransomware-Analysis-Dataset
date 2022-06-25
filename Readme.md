@@ -73,7 +73,7 @@ O arquivo tabmém tem a função de baixar os relatórios em JSON do cuckoo. Ten
 Este script transforma os arquivos dos relatórios, em um dataframe pandas, convertendo os dados selecionados em features para o dataset. 
 </div>
 
-<h4>4.4 - ML Explorer</h4>
+<h4>4.5 - ML Explorer</h4>
 
 <div align="justify">
 Este é um arquivo Jupyter Notebook que faz tratamento do dataframe, como transformar o que é NaN em zeros (zero chamada àquela API). Ao final, o dataset estará pronto para ser utilizado em classificadores de ML. 
