@@ -60,17 +60,23 @@ A partir do nome de um malware que se deseja conseguir amostras, este script bai
 Este script verifica o conteúdo da pasta HashList e checa os dados no VT para arquivos DLL ou EXE e que tenham o nome do malware na chave 'suggested_threat_label'. Caso atenda os requisitos de formato e  nome, o script procura amostras disponíveis no VS e MB e grava na pasta 'ZIP Samples & Download Logs',  juntamente com a situação de cada hash: se foi descartado pela extensão ser diferente e/ou se foi e encontrado (ou não) nos repositórios.
 </div>        
 
-<h4>4.3 - XXXXXXXXXXXXX</h4>
+<h4>4.3 - Unzip Samples Download Reports</h4>
 
 <div align="justify">
-Arquivo que deszipa as amostras de
-Arquivo que baixa os relatórios em JSON do cuckoo (ver se dá pra colocar junto com o script que já baixa as amostras)
+Arquivo que deszipa as amostras de arquivos baixados dos repositórios utilizados.
+O arquivo tabmém tem a função de baixar os relatórios em JSON do cuckoo. Tenha em mente que os relatórios podem ter de alguns MB até vários GB, dependendo das interações que o malware faz com a Máquina Virtual usada para análise.
 </div>
         
 <h4>4.4 -   Dataset Constructs from Json Reports</h4>
 
 <div align="justify">
-Este script transforma os arquivos JSON, produzidos pelo cuckoo sandbox ao executar as análises das amostras, em um dataframe pandas, convertendo os dados selecionados em features para o dataset. 
+Este script transforma os arquivos dos relatórios, em um dataframe pandas, convertendo os dados selecionados em features para o dataset. 
+</div>
+
+<h4>4.4 - ML Explorer</h4>
+
+<div align="justify">
+Este é um arquivo Jupyter Notebook que faz tratamento do dataframe, como transformar o que é NaN em zeros (zero chamada àquela API). Ao final, o dataset estará pronto para ser utilizado em classificadores de ML. 
 </div>
 
 <h3>5 - Dataset</h3>
