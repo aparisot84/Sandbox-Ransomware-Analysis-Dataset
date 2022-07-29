@@ -52,7 +52,7 @@ def flatten(d, sep="."):
 def filter_dict(json_file): #este é o filtro que passa o que não está listado
 
     """
-    Filtra o arquivo JSON para concatenar somente as informações escolhidas para compor o dataset. Como os arquivos podem ser muito diferentes, é melhor descartar as entradas indesehjadas ao invés de selecionar as entradas desejadas.
+    Filtra o arquivo JSON para concatenar as informações não filtradas para compor o dataset. Como os arquivos podem ser muito diferentes, é melhor descartar as entradas indesehjadas ao invés de selecionar as entradas desejadas.
     """
 
     # A entrada info será parcialmente aproveitada
@@ -145,21 +145,123 @@ def filter_dict(json_file): #este é o filtro que passa o que não está listado
 
 def filter_dict2(json_file):
 
+    """
+    Filtra o arquivo JSON para concatenar somente as informações escolhidas para compor o dataset. Como os arquivos podem ser muito diferentes, é melhor descartar as entradas indesejadas ao invés de selecionar as entradas desejadas.
+    """
+
     filtered_json_file = {}
 
-    if ("behavior" in json_file) and ("apistats" in json_file["behavior"]):
+    # colocar aqui um contador para somar as quantidades de network (cada protocolo), kernel module name (qtd de módulos diferentes) e metadata/dropped files (qtd)
 
-        filtered_json_file["apistats"] = json_file["behavior"]["apistats"]
+    #memory/privs/data privileged/data
 
-        filtered_json_file["score"] = json_file["info"]["score"]
+    # netscan data[i]/protocol (verificar se fica sobreposto aos protocolos em networking)
 
-        filtered_json_file["id"] = json_file["info"]["id"]
+    filtered_json_file["id"] = int(json_file["info"]["id"])
 
-        return filtered_json_file
+    filtered_json_file["score"] = json_file["info"]["score"]
 
-    else:
-        return 0
+    filtered_json_file["added_files"] = 0
 
+    for strings in json_file["debug"]["log"]:
+
+        if "DECRYPT FILE" in strings:   # Caso tenha o botão de decrypt no log, é um decrypter e será descartado
+
+            break
+
+        elif "Added new file to list with pid" in strings:
+
+            filtered_json_file["added_files"] += 1
+
+    if ("behavior" in json_file):
+
+        if ("apistats" in json_file["behavior"]): #Alguns estão retornando zero no ID pq nao tem API STATS -> acho que vou limpar direto no dataset depois de pronto
+
+            filtered_json_file["apistats"] = json_file["behavior"]["apistats"]
+
+        if ("summary" in json_file["behavior"]):
+
+            filtered_json_file["file_created"] = len(json_file["behavior"]['summary']["file_created"]) if ("file_created" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["file_recreated"] = len(json_file["behavior"]['summary']["file_recreated"]) if ("file_recreated" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["directory_created"] = len(json_file["behavior"]['summary']["directory_created"]) if ("directory_created" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["dll_loaded"] = len(json_file["behavior"]['summary']["dll_loaded"]) if ("dll_loaded" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["file_opened"] = len(json_file["behavior"]['summary']["file_opened"]) if ("file_opened" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["command_line"] = len(json_file["behavior"]['summary']["command_line"]) if ("command_line" in json_file["behavior"]['summary']) else 0 #verificar quais os command line aparecem nos relatórios
+
+            filtered_json_file["regkey_opened"] = len(json_file["behavior"]['summary']["regkey_opened"]) if ("regkey_opened" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["resolve_host"] = len(json_file["behavior"]['summary']["resolve_host"]) if ("resolve_host" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["file_written"] = len(json_file["behavior"]['summary']["file_written"]) if ("file_written" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["file_deleted"] = len(json_file["behavior"]['summary']["file_deleted"]) if ("file_deleted" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["file_exists"] = len(json_file["behavior"]['summary']["file_exists"]) if ("file_exists" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["file_moved"] = len(json_file["behavior"]['summary']["file_moved"]) if ("file_moved" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["mutex"] = len(json_file["behavior"]['summary']["mutex"]) if ("mutex" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["file_failed"] = len(json_file["behavior"]['summary']["file_failed"]) if ("file_failed" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["wmi_query"] = len(json_file["behavior"]['summary']["wmi_query"]) if ("wmi_query" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["guid"] = len(json_file["behavior"]['summary']["guid"]) if ("guid" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["file_read"] = len(json_file["behavior"]['summary']["file_read"]) if ("file_read" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["regkey_read"] = len(json_file["behavior"]['summary']["regkey_read"]) if ("regkey_read" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["directory_enumerated"] = len(json_file["behavior"]['summary']["directory_enumerated"]) if ("directory_enumerated" in json_file["behavior"]['summary']) else 0
+
+            filtered_json_file["regkey_written"] = len(json_file["behavior"]['summary']["regkey_written"]) if ("regkey_written" in json_file["behavior"]['summary']) else 0
+
+    if "memory" in json_file:
+
+        for dlllist in json_file["memory"]["dlllist"]["data"]:          #memory/dlllist/data[i]/process name
+
+        #OBS: tem alguns processos com nomes aleatórios, talvez tenha que apagar eles do dataset
+
+        #Todo: em alguns casos o nome é vazio, quando for assim tem que diferenciar pq em outras subseções acontece a mesma coisa e pode misturar as features
+
+            if dlllist["process_name"] in filtered_json_file.keys():
+
+                filtered_json_file[dlllist["process_name"]] += 1
+
+            else:
+
+                filtered_json_file[dlllist["process_name"]] = 1
+
+        for privs in json_file["memory"]["privs"]["data"]:
+
+            if privs["privilege"] in filtered_json_file.keys():
+
+                filtered_json_file[privs["privilege"]] += 1
+
+            else:
+
+                filtered_json_file[privs["privilege"]] = 1
+
+
+    if "network" in json_file:
+
+        filtered_json_file["udp"] = len(json_file["network"]['udp'])
+        filtered_json_file["udp"] = len(json_file["network"]['dns'])
+        filtered_json_file["udp"] = len(json_file["network"]['domains'])
+        filtered_json_file["udp"] = len(json_file["network"]['http'])    #verificar pq tem um comando count dentro dessa seçao
+        filtered_json_file["udp"] = len(json_file["network"]['tcp'])
+        filtered_json_file["udp"] = len(json_file["network"]['http_ex'])
+
+    if "strings" in json_file:
+
+        filtered_json_file["strings_count"] = len(json_file["strings"])
+
+    return filtered_json_file
 
 def normalize(flat_json):
 
@@ -188,6 +290,7 @@ def normalize(flat_json):
 
     return df1
 
+
 def main():
 
     path = "..//5 - Cuckoo Reports//"
@@ -201,7 +304,7 @@ def main():
 
     cont = 0
 
-    for item in json_file_list:     # [start_file:finish_file]
+    for item in sorted(json_file_list):     # [start_file:finish_file]
 
         file_path = path + item
 
@@ -231,7 +334,7 @@ def main():
 
         #df1 = normalize(flat_json) #retorna o dataframe normalizado
 
-        # TODO: A conversão das colunas do DF1 deve ser feita aqui, pois preciso dele normalizado. Vou tentar normalizar manualmente e depois coocar no dataframe, se der certo, nao vou precisar usar a função filtro.
+        # TODO: A conversão das colunas do DF1 deve ser feita aqui, pois preciso dele normalizado. Vou tentar normalizar manualmente e depois colocar no dataframe, se der certo, nao vou precisar usar a função filtro.
 
         ###############################################################################
 
