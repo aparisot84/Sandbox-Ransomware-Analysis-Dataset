@@ -44,7 +44,6 @@ def unzip_file(origin_path, destination_path, file):
 #
 ####################################################################################################
 
-
 def tasks_list(url_base, header):
     """Returns the list of tasks stored in the internal Cuckoo database. You can optionally specify a limit of entries to return."""
 
@@ -86,7 +85,7 @@ def download_cuckoo_reports():
 
     """Baixa os relatórios das análises do cuckoo de acordo com a faixa discriminada em range() e salva em um arquivo cujo nome é o hash"""
 
-    for i in range(192, 737):
+    for i in range(791, 1453):
         print("Requisitando Relatório")
 
         data = tasks_report(i, url_base, header)
