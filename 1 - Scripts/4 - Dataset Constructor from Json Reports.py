@@ -173,6 +173,10 @@ def filter_dict2(json_file):
 
             filtered_json_file["added_files"] += 1
 
+    # Aqui tinha também o contador de entradas diferentes em memory/modscan/data[i]/kernel_module_name, porém quando fui verificar a soma dos valores de cada coluna do dataset, as colunas referentes a esses módulos estavam todas com os mesmos valores. Ao investigar o valor de cada linha naquelas colunas individualmente, vi que aquela area da tabela estava com os mesmos valores para aquela linha, o que nao controbuía em nada para o dataset
+
+
+
     if ("behavior" in json_file):
 
         if ("apistats" in json_file["behavior"]): #Alguns estão retornando zero no ID pq nao tem API STATS -> acho que vou limpar direto no dataset depois de pronto
@@ -263,11 +267,10 @@ def filter_dict2(json_file):
 
     return filtered_json_file
 
+
 def normalize(flat_json):
 
     """Esta função vai receber o flat json e transformar em dataframe"""
-
-    # preparar para receber chaves diferentes de "apistats" no dicionário (tenho que verificar quais podem entrar)
 
     keys_list = list(flat_json.keys())
 
@@ -281,7 +284,6 @@ def normalize(flat_json):
     for k, v in flat_json.items():
         k_split = k.split(sep='.')[-1]
         if k_split in unique_cols:
-            #print(k + "==============>" + str(v))
             unique_cols[k_split] = unique_cols[k_split] + v
 
     # É mais fácil fazer as operações num dicionário mononivel e depois transformar em um dataframe
@@ -405,5 +407,18 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
+
+    
+
+
+
+
+
+
+
+
+
+
 
 

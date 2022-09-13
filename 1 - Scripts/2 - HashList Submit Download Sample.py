@@ -5,6 +5,9 @@
 #   das amostras quando encontradas nos repositórios, quando a extensão for EXE ou DLL.
 ##################################################################################################
 
+#TODO: Na parte de download das amostras, tive que buscar manualmente no MalwareBazzar amostras que não estavam na lista (pq ela foi feita a partir do VT) e baixá-las manualmente. Nesse sentido tem que implementar a busca na base de dados do MB e incluir no que foi baixado do VT
+
+
 from datetime import datetime
 import time
 import requests
@@ -50,21 +53,6 @@ def save_state(path, hash, family, state):
     else:
 
         open(log_path + 'desconhecido.txt', 'a').write(hash + '\n')
-
-
-def unzip_file(path, hash):
-
-    """Funcao que extrai o conteudo de um arquivo zip"""
-
-    with pyzipper.AESZipFile(path + hash + ".zip") as zf:
-
-        zf.pwd = b"infected"
-
-        #my_secrets = zf.extractall(".")  #mantive o original
-
-        zf.extractall(".")  #como que faco pra salvar o arquivo com a hash como nome?????
-            
-        #print("Sample " + hash + " unpacked.")
 
 
 def VT_submit_hash(url, hash, header):    
@@ -129,7 +117,7 @@ def MB_sample_download(url, hash, header, data, path, family):
 
     data["sha256_hash"] = hash    
 
-    response = requests.post(url, data=data, timeout=15, headers=header, allow_redirects=True)  
+    response = requests.post(url, data=data, headers=header, allow_redirects=True)      # retirei o timeout=15 pois estava dando problema com a requisição
 
     #print(response.status_code) #está dando erro 404
 
@@ -183,7 +171,24 @@ def sample_evaluation(reports, family):
 
     # nao estou usando o file para avaliar (nao sei se alguma coisa nao é file)
 
-    if ((family in report_items["malware_names"]) or (family in report_items["suggested_threat_label"].lower())):
+    #if ((family in report_items["malware_names"]) or (family in report_items["suggested_threat_label"].lower())):
+
+    if type(report_items["malware_names"]) is list:
+        for i in range(len(report_items["malware_names"])):
+            report_items["malware_names"][i] = report_items["malware_names"][i].lower()
+    elif (type(report_items["malware_names"]) is str):
+        report_items["malware_names"].lower()
+
+    if type(report_items["suggested_threat_label"]) is list:
+        for i in range(len(report_items["suggested_threat_label"])):
+            report_items["suggested_threat_label"][i] = report_items["suggested_threat_label"][i].lower()
+    elif (type(report_items["suggested_threat_label"]) is str):
+        report_items["suggested_threat_label"].lower()
+
+
+
+
+    if ((family in report_items["malware_names"]) or (family in report_items["suggested_threat_label"]) or ("sodinokibi" in report_items["malware_names"]) or ("sodinokibi" in report_items["suggested_threat_label"])):
 
         # o metodo lower nao funcionou nas duas partes dese if, nao sei se pode dar problema de descarte de amostras
 
@@ -317,6 +322,35 @@ def print_attributes(attributes):
         print("creation_date => ", attributes["creation_date"])
 
 
+def unzip_file(path_origin, path_destination, file):
+    """Função que extrai o conteudo de um arquivo zip"""
+
+    print("Descompactando arquivo ZIP para a pasta temporária")
+
+    with pyzipper.AESZipFile(path_origin + "//" + file) as zf:
+        zf.pwd = b"infected"
+
+        zf.extractall(path_destination)
+
+    print("Arquivo descompactao corretamente")
+
+    return zf.namelist()[0]
+
+
+def unzip():    #esta função que chama o unzip file
+    path_complete = path + "//ransomexx"
+
+    samples = list_folder_content(path_complete)
+
+    for item in samples:
+
+        print(item)
+
+        unzipped = unzip_file(path_complete, temp_path, item)
+
+    return
+
+
 ######################################################################################
 ###
 ###                                 DADOS DAS API
@@ -331,14 +365,14 @@ VT_Url = "https://www.virustotal.com/api/v3/"
 
 VT_header = {
     "Accept": "application/json",
-    "x-apikey": "Your API key here"
+    "x-apikey": "d481057f07194daade825e78d4090e5a5ce2a31bec3bc7fb5e7cdb7cfb72f08a"
 }
 
 ###########################################
 #               MALWAREBAZAAR
 ###########################################
 
-MB_header = {'API-KEY': 'Your API key here'}
+MB_header = {'API-KEY': '7ebaef431c799344fe230b4a7b36bb6b'}
 
 MB_data = {
         'query': 'get_file',
@@ -354,7 +388,7 @@ MB_url = 'https://mb-api.abuse.ch/api/v1/'
 VS_url = "https://virusshare.com/apiv2/download"
 
 VS_payload = {
-    "apikey": "Your API key here",
+    "apikey": "F2XAuOUyYuz51N2wqhlrbGDNYTgRXhIW",
     "hash": hash
 }
 
@@ -378,7 +412,12 @@ folder_content = os.listdir(hash_file_path) # lista os arquivos de hash dos rans
 
 contador = 1
 
-print(folder_content) 
+print(folder_content)
+
+folder_content = ['revilhashes', 'ryukhashes']
+
+print(folder_content)
+
 
 for file_names in folder_content:        
 
@@ -441,3 +480,5 @@ for file_names in folder_content:
             state = "descartada"
 
             save_state(sample_path, hash, family, state)
+
+

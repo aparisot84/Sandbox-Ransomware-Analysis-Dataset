@@ -14,9 +14,9 @@ import requests
 import os
 
 url = "https://www.virustotal.com/api/v3/"
-headers = {"x-apikey": "Your API key here"}
+headers = {"x-apikey": "d481057f07194daade825e78d4090e5a5ce2a31bec3bc7fb5e7cdb7cfb72f08a"}
 
-query = "clop"
+query = "ryuk"
 url_query = url + "search?query=" + query + "&limit=300"
 
 path = '..//2 - HashList//'
