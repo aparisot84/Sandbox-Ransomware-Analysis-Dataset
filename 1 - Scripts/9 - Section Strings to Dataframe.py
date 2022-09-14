@@ -28,9 +28,12 @@ import time
 
 # As funções que mais demoram são a de transformação em um dataframe e a de fillna
 
+# Depois de muito tentar resolver problemas, descobri que é o excel que abre o arquivo CSV com os caracteres errados, o que no final das contas não importa, pois é o pandas que tem que abrir o arquivo corretamente
 
 def json_file_list(path: str, sections: list) -> dict:
-    """lista o conteúdo de uma determinada pasta e retorna um dicionário com o conteudo referente a cada pasta de cada seção"""
+    """
+    Lista o conteúdo de uma determinada pasta e retorna um dicionário com o conteúdo referente a cada pasta de cada seção.
+    """
     file_list_dict = dict.fromkeys(sections)
     for section in sections:
         file_list_dict[section] = os.listdir(path + section)
@@ -38,7 +41,9 @@ def json_file_list(path: str, sections: list) -> dict:
 
 
 def read_json(filename: str) -> dict:
-    """Carrega o arquivo JSON"""
+    """
+    Carrega o arquivo JSON.
+    """
     try:
         with open(filename, "r") as f:
             data = json.loads(f.read())
@@ -48,10 +53,10 @@ def read_json(filename: str) -> dict:
 
 
 def read_file(path: str, section: str) -> list:
-    """Carrega o arquivo TXT"""
-    
+    """
+    Carrega o arquivo TXT.
+    """
     if section in path:
-        
         try:
             with open(path, "r") as f:
                 data = f.readlines()
@@ -62,19 +67,18 @@ def read_file(path: str, section: str) -> list:
 
 def save_dataframe(dataframe: DataFrame, path: str, section: str):
     """
-    Salva o dataframe no formato CSV (tem que ser CSV para poder abrir no excel)
+    Salva o dataframe no formato CSV.
     """
     dataframe.to_csv(path + section + ".csv", index=False)
 
 
 def flatten(d: dict, sep=".") -> collections.OrderedDict:
-    """Transforma o json aninhado num dicionário com os nós da árvore concatenados em um único nível, com ponto como separador das chaves do dicionário original"""
-    
+    """
+    Transforma o json aninhado num dicionário com os nós da árvore concatenados em um único nível, com ponto como separador das chaves do dicionário original
+    """
     # import collections
-    
     # obj = {}
     obj = collections.OrderedDict()
-    
     def recurse(t, parent_key=""):
         if isinstance(t, list):
             for i in range(len(t)):
@@ -85,38 +89,31 @@ def flatten(d: dict, sep=".") -> collections.OrderedDict:
                 recurse(v, parent_key + sep + k if parent_key else k)
         else:
             obj[parent_key] = t
-    
     recurse(d)
     return obj
 
 
 def normalize(flat_json):
-    """Esta função vai receber o flat json e transformar em dataframe"""
-    
+    """
+    Função que transforma o flat json em dataframe.
+    """
     keys_list = list(flat_json.keys())
-    
     unique_cols = {}
-    
     for items in keys_list:
         api = items.split(sep='.')[-1]
         if api not in unique_cols:
             unique_cols[api] = 0
-    
     for k, v in flat_json.items():
         k_split = k.split(sep='.')[-1]
         if k_split in unique_cols:
             unique_cols[k_split] = unique_cols[k_split] + v
-    
-    # É mais fácil fazer as operações num dicionário mononivel e depois transformar em um dataframe
-    
     df1 = pandas.json_normalize(unique_cols)
-    
     return df1
 
 
 def compute_tf(word_dict):
     """
-    Calcula a frequencia de termos de um documento. A freuencia de termos é a quantidade de vezes que aqule termo aparece sobre a quantidade de termos que tem naquele documento.
+    Calcula a frequência de termos de um documento. A frequência de termos é a quantidade de vezes que aquele termo aparece sobre a quantidade de termos que tem naquele documento.
     """
     tf_dict = {}
     word_count = len(word_dict.keys())
@@ -142,7 +139,7 @@ def compute_idf(corpus: dict, wordlist: list) -> dict:
 
 def compute_tfidf(tf: dict, idf: dict) -> dict:
     """
-    Calcula o TF-IDF do corpus
+    Calcula o TF-IDF do corpus (TF*IDF de cada termo).
     """
     tf_idf = {}
     for document_id in tf:
@@ -154,9 +151,8 @@ def compute_tfidf(tf: dict, idf: dict) -> dict:
 
 def create_wordlist(corpus: dict) -> list:
     """
-    Cria a lista de termos a partir do corpus de documentos (dicionário)
+    Cria a lista de termos a partir do corpus de documentos (dicionário).
     """
-
     wordlist = []
     
     """
@@ -166,22 +162,18 @@ def create_wordlist(corpus: dict) -> list:
             if term not in wordlist:
                 wordlist.append(term)
     """
-    
     # Confecciona a wordlist de maneira mais eficiente que iterar cada termo em cada documento e comparar um a um com toda a wordlist.
     temp_list = []
     for documents in corpus:
         for term in corpus[documents].keys():
             temp_list.append(term)
     wordlist = list(dict.fromkeys(temp_list))
-    
-    
-
     return wordlist
 
 
-def convert_to_dataframe(tf_idf: dict):  # Atenção!!!
+def convert_to_dataframe(tf_idf: dict):
     """
-    Conversão do dicionário com o tf_idf em um dataframe
+    Converte o dicionário com o tf_idf em um dataframe.
     """
     df1 = pandas.DataFrame
     cont = 0
@@ -191,15 +183,17 @@ def convert_to_dataframe(tf_idf: dict):  # Atenção!!!
             print(cont, "- Preparando o dicionário da amostra", report, "para transformar em Dataframe", end='')
             flatted = flatten(tf_idf[report])
             df1 = normalize(flatted)
+            flatted = None
             print("......finalizado")
         else:
             print(cont, "- Preparando o dicionário da amostra", report, "para transformar em Dataframe", end='')
             flatted = flatten(tf_idf[report])
             df2 = normalize(flatted)
+            flatted = None
             print("......finalizado")
 
             print("Concatenando Dataframes", end='')
-            table = pandas.concat([df1, df2], ignore_index=True)    # axis=0
+            table = pandas.concat([df1, df2], ignore_index=True, axis=0)
             df1 = table
             print("......finalizado")
             
@@ -207,6 +201,8 @@ def convert_to_dataframe(tf_idf: dict):  # Atenção!!!
             table = None
             df2 = None
             print("......finalizado")
+            
+            #imprimir o tamanho do dataframe
         cont += 1
     df1["id"] = sample_id
     return df1
@@ -214,7 +210,7 @@ def convert_to_dataframe(tf_idf: dict):  # Atenção!!!
 
 def df_process(table: DataFrame) -> DataFrame:
     """
-    Função que processa o Dataframe para ser usado em ML, substituindo os valores N/A por zero.
+    FSubstitui os valores N/A por zero no dataframe.
     """
     for column in table.columns:
         table[column].fillna(0, inplace=True)
@@ -225,14 +221,21 @@ def strip_chars(dictionary: dict) -> dict:
     """
     Refaz as strings que são as chaves do dicionário sem os pontos para não interferir na função flatten.
     """
-    char_to_replace = {'.', ',', ' '}    # ponto virgula e espaço por nada
     
+    stripped_dict = {}
+    char_to_replace = {'.', ',', ' ', '\n', '\r'}    # ponto virgula e espaço por nada
     for char in char_to_replace:
         stripped_dict = {k.replace(char, ''): v for k, v in dictionary.items()}
     
+    # Substituição simples do ponto por nada nas strings
+    # stripped_dict = {k.replace('.', ''): v for k, v in dictionary.items()}
+    
+    # tentativa de substituir as strings por hashes
+    # stripped_dict = {}
+    # for key, value in dictionary.items():
+    #    stripped_dict[hash(key)] = value
     
     return stripped_dict
-
 
 ######################################################
 ######################################################
@@ -246,11 +249,11 @@ def main():
     
     #sections = ['behavior',  'memory', 'network', 'signatures', 'strings']
 
-    sections = ['behavior']           # Bagunçado
-    # sections = ['memory']             # aparentemente está ok (mas é muito grande pra ver tudo no excel)
-    # sections = ['network']            # Esta seção está com problema de formatação (o CSV fica bagunçado)
-    # sections = ['signatures']         # O id das amostras não foi passsado para o CSV
-    # sections = ['strings']            # strings ficou ok
+    # sections = ['behavior']             # Aparente problema de formatação (erro no carregamento)
+    # sections = ['memory']             # tabela ok
+    sections = ['network']            # Aparente problema de formatação (o CSV fica bagunçado)
+    # sections = ['signatures']         # tabela ok
+    # sections = ['strings']            # tabela ok
 
     path = "..//7 - TF-IDF//"
     
@@ -273,25 +276,18 @@ def main():
             
             print("Carregando arquivo", file, end="")
             document_json = read_json(file_path)
-            #stripped_document = strip_chars(document_json)   # Esta função foi somente para teste da seção network
+            stripped_document = strip_chars(document_json)   # Esta função foi somente para teste da seção network
             print("..............concluído")
 
             print("Calculando frequencia de termos (TF)", end="")
-            #tf[document_id] = compute_tf(stripped_document)
-            tf[document_id] = compute_tf(document_json)
-
+            tf[document_id] = compute_tf(stripped_document)
+            #tf[document_id] = compute_tf(document_json)
             print("..............concluído")
             
-            """
-            # Seção retirada
-            print("Adicionando novos termos à wordlist", end="")
-            wordlist = list(set(wordlist + list(tf[document_id].keys())))
-            print("..............concluído")
-            """
 
             print("Criando o section_corpus com os documentos", end="")
-            #section_corpus[document_id] = stripped_document
-            section_corpus[document_id] = document_json
+            section_corpus[document_id] = stripped_document
+            #section_corpus[document_id] = document_json
             print("..............concluído")
 
         print("Criando wordlist", end="")
@@ -299,7 +295,7 @@ def main():
         print("..............concluído")
         print("Wordlist com " + str(len(wordlist)) + " termos")
         
-        print("Calculando a frequencia inversa dos termos nos documentos (IDF)", end="")
+        print("Calculando a frequência inversa dos termos nos documentos (IDF)", end="")
         idf = compute_idf(section_corpus, wordlist)
         print("..............concluído")
 
@@ -320,7 +316,7 @@ def main():
         
         #TODO: em algum ponto, inserir a lógica de seleção de x% das strings de cada arquivo para compor os calculos para o dataframe (fazer isso depois de testar os arquivos dos conjuntos)
         
-        #TODO: testar se é possível juntar todas as seções e aplicar o tf-idf de uma única vez (é possivel, mas vei demorar muito, por causa da quantidade de strings em cada seção)
+        #TODO: testar se é possível juntar todas as seções e aplicar o tf-idf de uma única vez (é possivel, mas vei demorar muito, por causa da quantidade de strings em cada seção) - Talves não seja não
     
 if __name__ == '__main__':
     main()
