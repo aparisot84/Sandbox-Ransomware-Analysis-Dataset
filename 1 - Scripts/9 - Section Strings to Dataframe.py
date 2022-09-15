@@ -4,7 +4,7 @@ import os
 import math
 import pandas
 from pandas import DataFrame
-import time
+
 
 """
     1 - Carrega os arquivos de uma determinada pasta ('network', 'signatures', 'behavior', 'memory', 'strings')
@@ -197,12 +197,12 @@ def convert_to_dataframe(tf_idf: dict):
             df1 = table
             print("......finalizado")
             
+            print("DataFrame com", len(table.columns), "colunas")
+            
             print("Limpando memória", end='')
             table = None
             df2 = None
             print("......finalizado")
-            
-            #imprimir o tamanho do dataframe
         cont += 1
     df1["id"] = sample_id
     return df1
@@ -219,23 +219,23 @@ def df_process(table: DataFrame) -> DataFrame:
 
 def strip_chars(dictionary: dict) -> dict:
     """
+    Função coringa, usada para implementar os processamentos intermediários no dataframe.
+    
     Refaz as strings que são as chaves do dicionário sem os pontos para não interferir na função flatten.
     """
     
-    stripped_dict = {}
-    char_to_replace = {'.', ',', ' ', '\n', '\r'}    # ponto virgula e espaço por nada
-    for char in char_to_replace:
-        stripped_dict = {k.replace(char, ''): v for k, v in dictionary.items()}
-    
-    # Substituição simples do ponto por nada nas strings
-    # stripped_dict = {k.replace('.', ''): v for k, v in dictionary.items()}
+    #stripped_dict = {}
+    #char_to_replace = {'.', ',', ' ', '\n', '\r', '?', '_', '!', '-', '*'}    # ponto virgula e espaço por nada
+    #for char in char_to_replace:
+    #    stripped_dict = {k.replace(char, ''): v for k, v in dictionary.items()}
     
     # tentativa de substituir as strings por hashes
-    # stripped_dict = {}
-    # for key, value in dictionary.items():
-    #    stripped_dict[hash(key)] = value
+    hashed_dict = {}
+    for key, value in dictionary.items():
+        hashed_dict[str(hash(key))] = value
     
-    return stripped_dict
+    return hashed_dict
+    # return stripped_dict
 
 ######################################################
 ######################################################
@@ -247,13 +247,14 @@ def main():
     
     # Para a seção network, commo tem muito ponto nas strings (IP, por exemplo), a função flatten está bagunçando a arrumação do dataframe
     
-    #sections = ['behavior',  'memory', 'network', 'signatures', 'strings']
-
-    # sections = ['behavior']             # Aparente problema de formatação (erro no carregamento)
-    # sections = ['memory']             # tabela ok
-    sections = ['network']            # Aparente problema de formatação (o CSV fica bagunçado)
+    
+    # Usar uma seção por vez!
+    
+    # sections = ['behavior']           # Aparente problema de formatação (erro no carregamento)
+    # sections = ['memory']               # tabela ok
+    # sections = ['network']            # Tabela OK
     # sections = ['signatures']         # tabela ok
-    # sections = ['strings']            # tabela ok
+    sections = ['strings']            # tabela ok
 
     path = "..//7 - TF-IDF//"
     
@@ -281,13 +282,10 @@ def main():
 
             print("Calculando frequencia de termos (TF)", end="")
             tf[document_id] = compute_tf(stripped_document)
-            #tf[document_id] = compute_tf(document_json)
             print("..............concluído")
-            
 
             print("Criando o section_corpus com os documentos", end="")
             section_corpus[document_id] = stripped_document
-            #section_corpus[document_id] = document_json
             print("..............concluído")
 
         print("Criando wordlist", end="")
