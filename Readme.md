@@ -156,7 +156,7 @@ O resuldado das divisões são os arquivos listados abaixo:
 
 &emsp; Behaviorrevil.csv -> seção behavior dos relatórios das amostras do Revil.
 
-Caso deseje utilizar os conjuntos de dados gerados por este trabalho, fique à vontade. A pasta com os conjuntos de dados pode ser acessada <a href="https://github.com/aparisot84/Sandbox-Ransomware-Analysis-Dataset">aqui</a>. 
+Caso deseje utilizar os conjuntos de dados gerados por este trabalho, fique à vontade. A pasta com os conjuntos de dados pode ser acessada <a href="https://github.com/aparisot84/Sandbox-Ransomware-Analysis-Dataset">aqui</a>.
 
 </div>
 
@@ -164,7 +164,7 @@ Caso deseje utilizar os conjuntos de dados gerados por este trabalho, fique à v
 
 Cabe ressaltar que as amostras benignas analisadas estão contidas em cada arquivo.Para realizar a classificação foram aplicados algoritmos de Aprendizado de Máquina conjuntamente com redutores de dimensionalidade (PCA) e padronizadores (Standard Scaler).
 
-Para descobrirmos qual a melhor configuração para classificação dentro de intervalos pré definidos, utilizamos o Gris Search CV.
+Para descobrirmos qual a melhor configuração para classificação dentro de intervalos pré definidos, utilizamos o Grid Search CV.
 
 <h3>6 - Limitações Técnicas</h3>
 <div align="justify">
