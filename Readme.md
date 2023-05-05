@@ -174,9 +174,7 @@ Para descobrirmos qual a melhor configuração para classificação dentro de in
 <br>
 
 <div>
-OBS1: 
-
-OBS2: Os arquivos TF-IDF e MLExplorer foram utilizados como rascunhos de implementação durante o processo de elaboração dos scripts.
+OBS: Os arquivos TF-IDF e MLExplorer foram utilizados como rascunhos de implementação durante o processo de elaboração dos scripts.
 
 </div>
 
